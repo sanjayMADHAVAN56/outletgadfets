@@ -2,12 +2,12 @@ const CACHE_NAME = "Outlet-v1";
 
 const urls = [
     "/",
-    "/index.html",
-    "/products.html",
-    "/cart.html",
-    "/offline.html",
-    "/css/style.css",
-    "/js/app.js"
+    "index.html",
+    "products.html",
+    "cart.html",
+    "offline.html",
+    "css/style.css",
+    "js/app.js"
 ];
 
 self.addEventListener("install",(event)=>{
