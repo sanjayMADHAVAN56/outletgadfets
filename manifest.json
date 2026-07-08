@@ -1,6 +1,7 @@
 {
   "name": "Outlet Gadgets",
-  "short_name": "outlet",
+  "short_name": "Outlet",
+  "description": "Online Electronics Shopping",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
