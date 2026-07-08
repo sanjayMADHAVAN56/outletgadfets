@@ -1,21 +1,59 @@
-const CACHE_NAME = "neuw-bloom-v1";
+const CACHE_NAME = "outlet-gadgets-v1";
 
 const urlsToCache = [
-    "./",
-    "./index.html",
-    "./app.js"
+  "/",
+  "/index.html",
+  "/offline.html",
+  "/manifest.json",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png"
 ];
 
-self.addEventListener("install", event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-        .then(cache => cache.addAll(urlsToCache))
-    );
+// Install
+self.addEventListener("install", (event) => {
+  console.log("Service Worker Installed");
+
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(urlsToCache);
+    })
+  );
+
+  self.skipWaiting();
 });
 
-self.addEventListener("fetch", event => {
-    event.respondWith(
-        caches.match(event.request)
-        .then(response => response || fetch(event.request))
-    );
+// Activate
+self.addEventListener("activate", (event) => {
+  console.log("Service Worker Activated");
+
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            return caches.delete(cache);
+          }
+        })
+      );
+    })
+  );
+
+  self.clients.claim();
+});
+
+// Fetch
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+
+      if (response) {
+        return response;
+      }
+
+      return fetch(event.request).catch(() => {
+        return caches.match("/offline.html");
+      });
+
+    })
+  );
 });
