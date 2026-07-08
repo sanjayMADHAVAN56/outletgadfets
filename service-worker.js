@@ -3,10 +3,7 @@ const CACHE_NAME = "outlet-gadgets-v1";
 const urlsToCache = [
   "/",
   "/index.html",
-  "/offline.html",
-  "/manifest.json",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png"
+   "/manifest.json"
 ];
 
 // Install
