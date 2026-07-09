@@ -888,7 +888,7 @@ app.get("/api/developer/files", (req, res) => {
   }
 });
 
-// 6. POST /api/developer/convert - TSX/TS to Spring Boot Java Converter
+// 6. POST /api/developer/convert - TSX/TS to Spring Boot Java & HTML Webpage Converter
 app.post("/api/developer/convert", async (req, res) => {
   const { code, targetType } = req.body;
   const ai = getAI();
@@ -898,7 +898,115 @@ app.post("/api/developer/convert", async (req, res) => {
   }
 
   if (!ai) {
-    // Simulate high-fidelity Java output for the UI if API key is not present
+    // Simulated high-fidelity output for the UI if API key is not present
+    if (targetType === "HTML") {
+      return res.json({
+        success: true,
+        aiPowered: false,
+        message: "No Gemini Key detected. Running in structural simulation mode.",
+        javaCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refurbished Products Showcase</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-6 selection:bg-indigo-500/30">
+    <div class="max-w-2xl w-full bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-5">
+            <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <h1 class="text-lg sm:text-xl font-bold text-white tracking-tight">Refurbished Device Showcase</h1>
+                </div>
+                <p class="text-xs text-slate-400">Translated from React Component TSX input</p>
+            </div>
+            <span class="text-[10px] bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono px-2.5 py-1 rounded-md">
+                HTML5 + Tailwind
+            </span>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="flex flex-col sm:flex-row gap-3 items-center justify-between bg-slate-950/60 p-3.5 rounded-xl border border-slate-800">
+            <div class="flex items-center gap-2.5">
+                <span class="text-xs text-slate-400">Filter Grade:</span>
+                <select id="gradeFilter" class="bg-slate-900 border border-slate-700 text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-indigo-500 text-slate-200">
+                    <option value="ALL">All Grades</option>
+                    <option value="LIKE_NEW">Like New</option>
+                    <option value="EXCELLENT">Excellent</option>
+                </select>
+            </div>
+            <p class="text-[10px] font-mono text-slate-500">45-Point Certified Inspection</p>
+        </div>
+
+        <!-- Grid -->
+        <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Item 1 -->
+            <div class="product-item bg-slate-950/40 p-4.5 rounded-xl border border-slate-800/80 hover:border-indigo-500/30 transition-all space-y-3" data-grade="LIKE_NEW">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-sm font-semibold text-slate-200">Apple MacBook Pro M2</h3>
+                    <span class="text-[9px] font-mono px-2 py-0.5 bg-emerald-500/15 text-emerald-400 rounded-md">LIKE NEW</span>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">Certified diagnostic checkout complete. Includes 1-year OutletGadgets warranty.</p>
+                <div class="flex items-center justify-between pt-1">
+                    <span class="text-indigo-400 font-mono text-xs font-bold">$1,299.00</span>
+                    <button class="bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all shadow-md shadow-indigo-950/50">
+                        View Details
+                    </button>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="product-item bg-slate-950/40 p-4.5 rounded-xl border border-slate-800/80 hover:border-indigo-500/30 transition-all space-y-3" data-grade="EXCELLENT">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-sm font-semibold text-slate-200">Dell XPS 13 OLED</h3>
+                    <span class="text-[9px] font-mono px-2 py-0.5 bg-indigo-500/15 text-indigo-400 rounded-md">EXCELLENT</span>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">Capacitive touch, invisible haptic glass trackpad, 4K screen, polished finish.</p>
+                <div class="flex items-center justify-between pt-1">
+                    <span class="text-indigo-400 font-mono text-xs font-bold">$899.00</span>
+                    <button class="bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all shadow-md shadow-indigo-950/50">
+                        View Details
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Notice -->
+        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center text-slate-500 text-[11px] leading-relaxed">
+            This is a fully self-contained HTML page generated from a TSX layout template.
+            <br/>To enable dynamic AI generation on any customized pasted TSX code, add your Gemini API Key in the settings menu.
+        </div>
+    </div>
+
+    <!-- Interactive script mapping the React State to Vanilla JS -->
+    <script>
+        document.getElementById('gradeFilter').addEventListener('change', function(e) {
+            const selected = e.target.value;
+            const items = document.querySelectorAll('.product-item');
+            items.forEach(item => {
+                if (selected === 'ALL' || item.getAttribute('data-grade') === selected) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>`
+      });
+    }
+
     const className = targetType === "Entity" ? "ProductEntity" : targetType === "Controller" ? "ProductController" : "ProductService";
     return res.json({
       success: true,
@@ -975,7 +1083,19 @@ public class ${className} {
   }
 
   try {
-    const systemPrompt = `You are a Senior Full Stack Software Architect, Java Spring Boot Developer, and Expert AI Systems Translator.
+    let systemPrompt = "";
+    if (targetType === "HTML") {
+      systemPrompt = `You are an Expert Senior Frontend Engineer, HTML5 Master, and UI/UX Designer.
+Your job is to read user-submitted TypeScript or React (.tsx) frontend code, and generate a single, highly polished, fully responsive, self-contained standalone HTML5 (.html) page.
+
+Guidelines:
+1. Include Tailwind CSS CDN via <script src="https://cdn.tailwindcss.com"></script>.
+2. Style the page to look premium, matching professional dark/light modes, with beautiful typography (use Google Fonts like 'Inter', imported inside <head>), elegant padding, modern cards, and responsive bento-like grid structures.
+3. Translate React state hooks (useState, useEffect, event handlers) into elegant, high-quality, fully functional Vanilla JavaScript or lightweight Alpine.js CDN so that interactive UI features (tabs, filters, forms, dialogs) actually function in the browser!
+4. Avoid loading external component dependencies that can't be resolved. Replace them with beautiful, semantic HTML equivalents styled with Tailwind.
+5. Return ONLY the raw HTML code starting with <!DOCTYPE html>. Do NOT wrap the output in markdown code blocks or return any prose or intro/outro text.`;
+    } else {
+      systemPrompt = `You are a Senior Full Stack Software Architect, Java Spring Boot Developer, and Expert AI Systems Translator.
 Your job is to read user-submitted TypeScript or React (.tsx) frontend code, and generate the equivalent, high-quality enterprise Java (Spring Boot) source file.
 
 Depending on the requested 'targetType', compile the code as:
@@ -989,10 +1109,13 @@ Rules:
 1. Return ONLY the raw Java code inside a valid package (e.g., com.outletgadget.generated).
 2. Do NOT wrap the output in markdown code blocks or return any prose or intro/outro text. Just the pure Java code.
 3. Keep it professional, using industry best practices like lombok annotations, Jakarta persistence, clear naming conventions, and proper comments.`;
+    }
 
     const response = await ai.models.generateContent({
       model: "gemini-3.5-flash",
-      contents: `Translate the following TypeScript/TSX code to a Spring Boot Java class of type "${targetType}":\n\n${code}`,
+      contents: targetType === "HTML" 
+        ? `Translate the following React TSX/TypeScript code to a single, complete, fully responsive, and interactive standalone HTML webpage:\n\n${code}`
+        : `Translate the following TypeScript/TSX code to a Spring Boot Java class of type "${targetType}":\n\n${code}`,
       config: {
         systemInstruction: systemPrompt
       }
@@ -1011,6 +1134,11 @@ Rules:
     console.error("TSX translation error:", err);
     res.status(500).json({ success: false, message: "Translation failed: " + err.message });
   }
+});
+
+// Serve the compiled, standalone, integrated single-file HTML directly
+app.get("/standalone.html", (req, res) => {
+  res.sendFile(path.join(process.cwd(), "standalone.html"));
 });
 
 // ==========================================

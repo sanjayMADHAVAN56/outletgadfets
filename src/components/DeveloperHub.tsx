@@ -44,6 +44,11 @@ const SAMPLE_SNIPPETS = [
     name: "OrderService.ts (Cart Checkout Service)",
     type: "Service",
     code: `export async function processCheckout(cartItems: any[], paymentMethod: string) {\n  const validation = cartItems.every(item => item.quantity > 0 && item.price > 0);\n  if (!validation) throw new Error("Invalid cart items detected.");\n\n  const orderTotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);\n  \n  const response = await fetch("/api/orders", {\n    method: "POST",\n    headers: { "Content-Type": "application/json" },\n    body: JSON.stringify({ items: cartItems, total: orderTotal, paymentMethod })\n  });\n\n  return response.json();\n}`
+  },
+  {
+    name: "DeviceDashboard.tsx (Interactive Web Widget)",
+    type: "HTML",
+    code: `import React, { useState } from 'react';\n\nexport default function DeviceDashboard() {\n  const [search, setSearch] = useState("");\n  const [warranty, setWarranty] = useState(true);\n  \n  const devices = [\n    { name: "Apple iPad Pro M2", price: 499, warranty: true },\n    { name: "Samsung Galaxy Tab S8", price: 299, warranty: false },\n    { name: "Sony WH-1000XM4 ANC", price: 180, warranty: true }\n  ];\n\n  const filtered = devices.filter(d => \n    d.name.toLowerCase().includes(search.toLowerCase()) &&\n    (!warranty || d.warranty)\n  );\n\n  return (\n    <div className="p-6 max-w-md mx-auto bg-slate-900 rounded-xl space-y-4 shadow-xl border border-slate-800">\n      <h2 className="text-xl font-bold text-white tracking-tight">Outlet Device Radar</h2>\n      \n      <input \n        type="text" \n        placeholder="Search devices..." \n        value={search} \n        onChange={(e) => setSearch(e.target.value)} \n        className="w-full px-3 py-2 bg-slate-800 text-white rounded-lg border border-slate-700 text-xs focus:outline-none focus:border-indigo-500"\n      />\n\n      <label className="flex items-center gap-2 text-slate-300 text-xs cursor-pointer select-none">\n        <input \n          type="checkbox" \n          checked={warranty} \n          onChange={(e) => setWarranty(e.target.checked)} \n          className="rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-0"\n        />\n        <span>Show only items with active warranty</span>\n      </label>\n\n      <div className="space-y-2">\n        {filtered.map((d, i) => (\n          <div key={i} className="p-3 bg-slate-800/80 hover:bg-slate-800 rounded-lg flex justify-between border border-slate-700/50 transition-all">\n            <span className="text-slate-200 text-xs">{d.name}</span>\n            <span className="text-indigo-400 font-bold text-xs">\${d.price}</span>\n          </div>\n        ))}\n      </div>\n    </div>\n  );\n}`
   }
 ];
 
@@ -64,7 +69,7 @@ export default function DeveloperHub() {
   // TSX to Java Compiler states
   const [compilerInput, setCompilerInput] = useState(SAMPLE_SNIPPETS[0].code);
   const [compilerOutput, setCompilerOutput] = useState("");
-  const [compilerTargetType, setCompilerTargetType] = useState<"Controller" | "Service" | "Entity" | "DTO" | "Any">("Controller");
+  const [compilerTargetType, setCompilerTargetType] = useState<"Controller" | "Service" | "Entity" | "DTO" | "Any" | "HTML">("Controller");
   const [isCompiling, setIsCompiling] = useState(false);
   const [compilerMessage, setCompilerMessage] = useState("");
   const [compilerCopied, setCompilerCopied] = useState(false);
@@ -434,7 +439,7 @@ export default function DeveloperHub() {
             {/* Input Options */}
             <div className="flex items-center justify-between shrink-0 bg-slate-950/50 p-3 rounded-xl border border-slate-800/80">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-slate-400">Target Java Component:</span>
+                <span className="text-xs font-medium text-slate-400">Target Compilation Output:</span>
                 <select
                   value={compilerTargetType}
                   onChange={(e) => setCompilerTargetType(e.target.value as any)}
@@ -445,6 +450,7 @@ export default function DeveloperHub() {
                   <option value="Service">Enterprise Service (@Service)</option>
                   <option value="DTO">Data Transfer Object (DTO / Record)</option>
                   <option value="Any">Automatic Mapping Wrapper</option>
+                  <option value="HTML">Single-File HTML & Tailwind Webpage (.html)</option>
                 </select>
               </div>
             </div>
@@ -473,7 +479,11 @@ export default function DeveloperHub() {
               ) : (
                 <>
                   <Cpu className="h-4 w-4" />
-                  <span>Translate TSX to Enterprise Spring Boot Java</span>
+                  <span>
+                    {compilerTargetType === "HTML" 
+                      ? "Translate TSX to Standalone HTML Webpage" 
+                      : "Translate TSX to Enterprise Spring Boot Java"}
+                  </span>
                 </>
               )}
             </button>
@@ -485,8 +495,12 @@ export default function DeveloperHub() {
             {/* Header Toolbar */}
             <div className="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 shrink-0">
               <span className="text-xs font-mono font-bold text-slate-200 flex items-center gap-2">
-                <Database className="h-4 w-4 text-emerald-400" />
-                Spring Boot Java Source File Output
+                {compilerTargetType === "HTML" ? (
+                  <FileCode className="h-4 w-4 text-amber-400" />
+                ) : (
+                  <Database className="h-4 w-4 text-emerald-400" />
+                )}
+                {compilerTargetType === "HTML" ? "Standalone HTML Webpage Output (.html)" : "Spring Boot Java Source File Output"}
               </span>
 
               {compilerOutput && (
@@ -532,7 +546,11 @@ export default function DeveloperHub() {
                   </div>
                   <div className="text-center space-y-1">
                     <p className="text-xs font-mono text-slate-200">GEMINI COMPILING PIPELINE ACTIVE</p>
-                    <p className="text-[10px] text-slate-500 font-sans">Parsing AST, mapping state, and rewriting as Spring annotations...</p>
+                    <p className="text-[10px] text-slate-500 font-sans">
+                      {compilerTargetType === "HTML" 
+                        ? "Converting JSX layout to static HTML5 elements & Tailwind CSS..." 
+                        : "Parsing AST, mapping state, and rewriting as Spring annotations..."}
+                    </p>
                   </div>
                 </div>
               ) : compilerOutput ? (
@@ -542,9 +560,13 @@ export default function DeveloperHub() {
               ) : (
                 <div className="h-full flex flex-col items-center justify-center text-slate-500 text-xs text-center p-6 space-y-2">
                   <FileCode className="h-8 w-8 text-slate-700 animate-bounce" />
-                  <p className="font-mono uppercase tracking-wider text-[11px]">Java Translation Frame Empty</p>
+                  <p className="font-mono uppercase tracking-wider text-[11px]">
+                    {compilerTargetType === "HTML" ? "HTML Translation Frame Empty" : "Java Translation Frame Empty"}
+                  </p>
                   <p className="max-w-xs text-slate-600 font-sans text-[11px]">
-                    Paste React code or load a sample preset on the left, then click compile to generate equivalent Spring Boot architectures.
+                    {compilerTargetType === "HTML" 
+                      ? "Paste React code or load a sample preset on the left, then click compile to generate an interactive standalone HTML5 webpage."
+                      : "Paste React code or load a sample preset on the left, then click compile to generate equivalent Spring Boot architectures."}
                   </p>
                 </div>
               )}
