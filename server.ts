@@ -239,7 +239,7 @@ const PRODUCTS: Product[] = [
       "Case": "MagSafe charging case with speaker and lanyard loop"
     },
     refurbishedDetails: "Sterilized thoroughly. Left and right dynamic balanced drivers tested. Dynamic spatial audio tracking tested and certified. Brand new ear tips (S,M,L) included in box.",
-    imageUrl: "https://images.unsplash.com/photo-1588449668338-d15168822481?w=800&auto=format&fit=crop&q=60"
+    imageUrl: "https://unsplash.com/photos/white-apple-airpods-charging-case-Mc5EwlPC3zA"
   },
   {
     id: 10,
